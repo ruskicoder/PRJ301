@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>REGISTER</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <form action="/register" method ="get">
+            <table>
+                <tr>
+                    <td colspan="2" style="font-weight: bold">LOGIN INFORMATION</td>
+                </tr>
+                <tr>
+                    <td>Email:</td>
+                    <td><input type="email" name="email" id="email"></td>
+                </tr>
+                <tr>
+                    <td>Password:</td>
+                    <td><input type="password" name="password" id="password"/></td>
+                </tr>
+                <tr>
+                    <td>Confirm Password:</td>
+                    <td><input type="password" name="confirm_password" id="confirm_password"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-weight: bold">USER INFORMATION</td>
+                </tr>
+                <tr>
+                    <td>Fullname:</td>
+                    <td><input type="text" name="name" id="name"/></td>                
+                </tr>
+                <tr>
+                    <td>Gender:</td>
+                    <td>
+                        <input type="radio" name="gender" id="gender_male" value="male" checked="checked">Male
+                        <input type="radio" name="gender" id="gender_female" value="female">Female<br/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Date of Birth:</td>
+                    <td>
+                        <select name="dateOfBirth" id="dateOfBirth">
+                            <option value="" selected="selected"></option>
+                            <option value="1">1</option>
+                            <option value="1">2</option>
+                            <option value="1">3</option>
+                            <option value="1">4</option>
+                            <option value="1">5</option>
+                            <option value="1">6</option>
+                            <option value="1">7</option>
+                            <option value="1">8</option>
+                            <option value="1">9</option>
+                            <option value="1">10</option>
+                            <option value="1">11</option>
+                            <option value="1">12</option>
+                            <option value="1">13</option>
+                            <option value="1">14</option>
+                            <option value="1">15</option>
+                            <option value="1">16</option>
+                            <option value="1">17</option>
+                            <option value="1">18</option>
+                            <option value="1">19</option>
+                            <option value="1">20</option>
+                            <option value="1">21</option>
+                            <option value="1">22</option>
+                            <option value="1">23</option>
+                            <option value="1">24</option>
+                            <option value="1">25</option>
+                            <option value="1">26</option>
+                            <option value="1">27</option>
+                            <option value="1">28</option>
+                            <option value="1">29</option>
+                            <option value="1">30</option>
+                            <option value="1">31</option>
+                        </select>
+                        <select name="monthOfBirth" id="monthOfBirth">
+                            <option value="" selected="selected"></option>
+                            <option value="1">1</option>
+                            <option value="1">2</option>
+                            <option value="1">3</option>
+                            <option value="1">4</option>
+                            <option value="1">5</option>
+                            <option value="1">6</option>
+                            <option value="1">7</option>
+                            <option value="1">8</option>
+                            <option value="1">9</option>
+                            <option value="1">10</option>
+                            <option value="1">11</option>
+                            <option value="1">12</option>                        
+                        </select>
+                        <select name="yearOfBirth" id="yearOfBirth">
+                        <option value="" selected="selected"></option>
+                            <option value="1">2001</option>
+                            <option value="1">2002</option>
+                            <option value="1">2003</option>
+                            <option value="1">2004</option>
+                            <option value="1">2005</option>
+                            <option value="1">2006</option>
+                            <option value="1">2007</option>
+                            <option value="1">2008</option>
+                            <option value="1">2009</option>
+                            <option value="1">2010</option>
+                            <option value="1">2011</option>
+                            <option value="1">2012</option>
+                            <option value="1">2013</option>
+                            <option value="1">2014</option>
+                            <option value="1">2015</option>
+                            <option value="1">2016</option>
+                            <option value="1">2017</option>
+                            <option value="1">2018</option>
+                            <option value="1">2019</option>
+                            <option value="1">2020</option>
+                            <option value="1">2021</option>
+                            <option value="1">2022</option>
+                            <option value="1">2023</option>
+                            <option value="1">2024</option>
+                            <option value="1">2025</option>
+                            <option value="1">2026</option>
+                            <option value="1">2027</option>
+                            <option value="1">2028</option>
+                            <option value="1">2029</option>
+                            <option value="1">2030</option>    
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Phone number:</td>
+                    <td><input type="tel" name="mobile" id="mobile"/></td>
+                </tr>
+                <tr>
+                    <td>Profile picture:</td>
+                    <td><input type="file" name="avatar" id="avatar"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-weight: bold">USER ADDRESS</td>
+                </tr>
+                <tr>
+                    <td>Country:</td>
+                    <td>
+                        <select name="country" id="country">
+                            <option value=""></option>
+                            <option value="vietnam" selected="selected">Vietnam</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>City:</td>
+                    <td>
+                       <select name="city" id="city">
+                            <option value=""></option>
+                            <option value="hcm" selected="selected">TP.HCM</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>District:</td>
+                    <td>
+                        <select name="district" id="district">
+                            <option value=""></option>
+                            <option value="thuduc" selected="selected">Thủ Đức</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Home address:</td>
+                    <td>
+                        <textarea name="homeAdress">
+                        </textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="submit" value="Register"/>
+                        <input type="reset" value="Clear Form"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </body>
+</html>
