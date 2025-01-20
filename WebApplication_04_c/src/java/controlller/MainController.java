@@ -59,6 +59,13 @@ public class MainController extends HttpServlet {
                 RequestDispatcher rd = request.getRequestDispatcher("invalid.html");
                 rd.forward(request, response);
             }
+            
+            //compare rd.forward vs responses.sendRedirect? Case study?
+            //rd.forward : server-side, same request as original: no loss of values in original page, hence the same directory in path
+            //responses.sendRedirect : client-side, will redirect to a new site. No values kept, new request made. Makes the client direct to a new tab
+            //Cases when using 2 methods:
+            //forward: Display errors, display sub webpages, display in-context content
+            //redirect: To main page, to a foreign page not inside main webpage, to an external URL
         }
     }
 
