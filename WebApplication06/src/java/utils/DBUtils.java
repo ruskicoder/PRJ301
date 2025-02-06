@@ -36,11 +36,6 @@ public class DBUtils {
             Connection c = getConnection();
             System.out.println(c);
             
-            String query = "";
-            
-            Statement st = c.createStatement();
-            int i = st.executeUpdate(query);
-            System.out.println(i);
             
             
         } catch (ClassNotFoundException ex) {
