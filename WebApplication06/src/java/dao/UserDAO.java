@@ -36,11 +36,6 @@ public class UserDAO implements IDAO<UserDTO, String> {
             Connection conn = DBUtils.getConnection();
             Statement st = conn.createStatement();
             int n = st.executeUpdate(sql);
-//            if(n>0){
-//                return true;
-//            }else{
-//                return false;
-//            }
             return n > 0;
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
