@@ -1,6 +1,6 @@
 <%-- 
-    Document   : example04
-    Created on : Feb 10, 2025, 1:36:26 PM
+    Document   : output
+    Created on : Feb 10, 2025, 2:18:45 PM
     Author     : PC
 --%>
 
@@ -12,27 +12,26 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <!-- In bang cuu chuong -->
-        <% for (int i = 2; i <= 9; i++) {
+        <%
+        int n = (int)request.getAttribute("n");
         %>
-        <h3>Bang cuu chuong <%=i%> <br/></h3>
+        
+        
+              <!-- In bang cuu chuong -->
+       
+        <h3>Bang cuu chuong <%=n%> <br/></h3>
             <%
 
                 for (int k = 1; k <= 10; k++) {
-                    int r = i * k;
+                    int r = n * k;
             %> 
 
-        <%=i%> * <%=k%> = <%=r%> <br/>
+        <%=n%> * <%=k%> = <%=r%> <br/>
 
         <%
             }
         %>
         <hr>
-        <%
-            }%>
-
-
-
-
+       
     </body>
 </html>
