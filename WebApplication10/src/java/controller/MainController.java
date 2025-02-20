@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -11,6 +12,7 @@ import dto.BookDTO;
 import dto.UserDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author tungi
+ * @author PC
  */
 @WebServlet(name = "MainController", urlPatterns = {"/MainController"})
 public class MainController extends HttpServlet {
@@ -56,18 +58,19 @@ public class MainController extends HttpServlet {
                         UserDTO user = getUser(strUserID);
                         request.getSession().setAttribute("user", user);
                     } else {
-                        request.setAttribute("message", "Incorrect UserID or Password!");
+                        request.setAttribute("message", "Incorrect UserID or Password");
                         url = "login.jsp";
                     }
                 } else if (action.equals("logout")) {
-                    request.getSession().invalidate(); // Huy session
+                    request.getSession().invalidate(); // Hủy session
                     request.setAttribute("message", "You have logged out!");
                     url ="login.jsp";
-                }else if (action.equals("search")) {
+                } else if (action.equals("search")) {
                     url ="search.jsp";
                     BookDAO bdao = new BookDAO();
                     String searchTerm = request.getParameter("searchTerm");
-                   
+                    List<BookDTO> books = bdao.searchByTitle(searchTerm);
+                    request.setAttribute("books", books);
                 }
             }
         } catch (Exception e) {
