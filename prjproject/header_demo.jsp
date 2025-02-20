@@ -1,4 +1,3 @@
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <style>
     * {
@@ -77,12 +76,12 @@
    
     <div class="container">
         <nav class="nav">
-            <a href="#" class="logo">SHOP ONLINE</a>
+            <a href="#" class="logo">NIGGER SHOP</a>
             <ul class="menu">
-                <li class="menu-item"><a href="#">Trang chủ</a></li>
-                <li class="menu-item"><a href="#">Sản phẩm</a></li>
-                <li class="menu-item"><a href="#">Giỏ hàng</a></li>
-                <li class="menu-item"><a href="#">Liên hệ</a></li>
+                <li class="menu-item"><a href="#">Home</a></li>
+                <li class="menu-item"><a href="#">Saves</a></li>
+                <li class="menu-item"><a href="#">Cart</a></li>
+                <li class="menu-item"><a href="#">Niggers</a></li>
             </ul>
             <div class="search-bar">
                 <input type="text" class="search-input" placeholder="Tìm kiếm...">
