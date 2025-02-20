@@ -59,6 +59,7 @@ public class MainController extends HttpServlet {
                     }
                 } else if (action.equals("logout")) {
                     request.setAttribute("user", null);
+                    request.setAttribute("message", "You have logged out!");
                     url ="login.jsp";
                 }
             }
