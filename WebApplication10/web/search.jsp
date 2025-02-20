@@ -16,11 +16,14 @@
                 UserDTO user = (UserDTO) request.getAttribute("user");
             %>
             Welcome <b> <%=user.getFullName()%> </b>
-            <a href="MainController?action=logout">Logout</a>
-            <hr/>
-            <form action="#">
-                Search Value <input type="text" name="txtSearchValue" />
-                <input type="submit" value="Login"/>
+            <br/>
+            <form action="MainController">
+                <input type="hidden" name="action" value="logout"/>
+                <input type="submit" value="logout"/>
+            </form>
+            <form action="MainController">
+                Search Books <input type="text" name="txtSearchValue" />
+                <input type="submit" value="Search"/>
             </form>
         </div>
         <%@include file="footer.jsp" %>
