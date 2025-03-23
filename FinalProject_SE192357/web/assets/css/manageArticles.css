@@ -1,0 +1,185 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.manage-articles-container {
+    flex: 1;
+    padding: 20px;
+    margin-top: 10vh;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.search-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-section input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-right: 10px;
+    flex-grow: 1; /* Allow search input to grow */
+}
+
+.search-section select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.search-btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search-btn:hover {
+    background-color: #0056b3;
+}
+.add-article-btn{
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.add-article-btn:hover{
+    background-color: #1e7e34;
+}
+
+.table-container {
+    overflow-x: auto; /* Horizontal scrolling for table */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.thumbnail {
+    width: 100px;
+    height: 60px;
+    object-fit: cover;
+}
+
+.view-btn, .edit-btn, .delete-btn {
+    /* Remove default button styles, as we'll style the images */
+    padding: 0;
+    margin-right: 5px;
+    border: none;
+    background: none; /* Remove background */
+    cursor: pointer;
+}
+.icon {
+    width: 24px; /* Adjust as needed */
+    height: 24px; /* Adjust as needed */
+    vertical-align: middle; /* Align images vertically */
+}
+
+.view-btn:hover, .edit-btn:hover, .delete-btn:hover {
+    opacity: 0.8;
+}
+.back-btn{
+    padding: 10px 20px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    align-self: center;
+}
+.back-btn:hover{
+    background-color: #5a6268;
+}
+
+.message{
+    color: red;
+    text-shadow: 0px 0px 5px white;
+    background-color: transparent;
+    padding: 5px 10px;
+    border-radius: 0.5em;
+    justify-content: center;
+    font: sans-serif;
+    font-weight: bold;
+}
+
+/* Notification styles */
+.notification {
+    position: fixed; /* Fixed position */
+    top: 10vh; /* Position it below the header */
+    left: 50%;
+    transform: translateX(-50%); /* Center horizontally */
+    background-color: #4CAF50; /* Green background */
+    color: white;
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* Ensure it's above other content */
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.5s ease; /* Smooth transition */
+}
+
+.notification.show {
+    opacity: 1; /* Visible when 'show' class is added */
+}
+
+@media (max-width: 768px) {
+    .manage-articles-container{
+        margin-top: 25vh;
+    }
+
+    .search-section{
+        flex-direction: column;
+    }
+}
+
+.guest-operations {
+    display: flex;
+    flex-direction: column; /* Stack buttons vertically */
+    width: 100%; /* Occupy full width of the container */
+}
+.guest-operations  .dashboard-btn, .guest-operations .logout-btn{
+    width: 100%;
+}

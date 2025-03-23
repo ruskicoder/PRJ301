@@ -1,0 +1,74 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.page-container{
+    margin-top: 20vh;
+    padding: 20px;
+}
+
+.articles-container {
+    display: grid; /* Use CSS Grid */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
+    gap: 20px; /* Space between items */
+    padding: 20px;
+    max-width: 1200px; /* Max container width */
+    margin: 0 auto; /* Center the container */
+}
+
+.article-card {
+    /* Removed flex properties, no longer needed with grid */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    height: 25rem;
+    overflow: hidden; /* Hide overflowing content */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex; /* Use flexbox for internal layout */
+    flex-direction: column; /* Stack content vertically */
+}
+
+.article-card:hover {
+    transform: translateY(-5px); /* Lift the card slightly */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.article-thumbnail {
+    width: 100%;
+    height: 12rem;
+    object-fit: cover; /* Ensure the image covers the area */
+    flex-shrink: 0; /* Prevent thumbnail from shrinking */
+}
+
+.article-info {
+    padding: 20px;
+    flex-grow: 1; /* Allow info section to grow */
+    display: flex;
+    flex-direction: column; /* Stack title and subtitle */
+}
+
+.article-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    line-height: 1.4; /* Improved line height */
+    flex-shrink: 0;
+}
+
+.article-subtitle {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.5;
+    flex-grow: 1; /* Allow subtitle to take remaining space */
+}
+@media (max-width: 768px) {
+
+    .page-container{
+        margin-top: 25vh;
+    }
+}
