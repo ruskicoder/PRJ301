@@ -1,0 +1,15 @@
+.site-footer {
+    background-color: #053281; /* Dark blue background */
+    color: white; /* White text color */
+    padding: 15px 20px; /* Vertical and horizontal padding */
+    text-align: center; /* Center the text horizontally */
+    margin-top: auto; /* Pushes footer to the bottom in a flex container */
+    font-size: 0.9em; /* Slightly smaller font size */
+    width: 100%; /* Ensure it spans full width */
+    box-sizing: border-box; /* Include padding in the element's total width and height */
+}
+
+.footer-content p {
+    margin: 0; /* Remove default paragraph margin */
+    padding: 0; /* Remove default paragraph padding */
+}

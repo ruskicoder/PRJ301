@@ -1,0 +1,65 @@
+/* Styles for Pagination Controls */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+    gap: 10px; /* Space between buttons and text */
+    margin-top: 15px; /* Space above pagination */
+    margin-bottom: 15px; /* Space below pagination */
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+}
+
+.pagination-btn {
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    color: #007bff;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.pagination-btn:disabled {
+    color: #aaa;
+    cursor: not-allowed;
+    background-color: #f9f9f9;
+}
+
+.page-info {
+    font-size: 0.95rem;
+    color: #555;
+    margin: 0 5px; /* Add slight margin */
+}
+
+.page-info .current-page,
+.page-info .total-pages {
+    font-weight: bold;
+}
+
+/* Add this ID to the existing .articles-container in homepage.css */
+#articles-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Ensure article-card display is correct for pagination.js logic */
+.article-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    /* height: 25rem; */ /* Let height be determined by content */
+    min-height: 25rem; /* Suggest using min-height instead */
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex; /* Keep this */
+    flex-direction: column;
+}

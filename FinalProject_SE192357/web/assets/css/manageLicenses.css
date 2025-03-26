@@ -1,0 +1,209 @@
+/* /assets/css/manageLicenses.css */
+/* Styling similar to manageArticles.css */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.manage-licenses-container {
+    flex: 1;
+    padding: 20px;
+    margin-top: 10vh; /* Adjust based on header height */
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #fff; /* Add background for the main container */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem; /* Add bottom margin */
+}
+
+/* Error container specific style within this page */
+.error-container.manage-licenses-container {
+    background-color: #ffdddd;
+    border: 1px solid #f44336;
+    color: #f44336;
+    text-align: center;
+    margin-top: 15vh;
+}
+.error-container.manage-licenses-container h1 {
+    color: #f44336;
+    margin-bottom: 15px;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.search-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #fff; /* Keep or adjust as needed */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap; /* Allow wrapping */
+    gap: 10px; /* Add gap between items */
+}
+
+.search-section form {
+    display: flex; /* Make internal form elements align */
+    align-items: center;
+    gap: 10px;
+    flex-grow: 1; /* Allow search form to grow */
+}
+
+
+.search-section input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    flex-grow: 1; /* Allow search input to grow */
+    min-width: 200px; /* Minimum width */
+}
+
+.search-btn, .add-license-btn {
+    padding: 10px 20px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    white-space: nowrap; /* Prevent button text wrapping */
+}
+
+.search-btn {
+    background-color: #007bff;
+}
+.search-btn:hover {
+    background-color: #0056b3;
+}
+
+.add-license-btn {
+    background-color: #28a745; /* Green */
+}
+.add-license-btn:hover {
+    background-color: #1e7e34;
+}
+
+
+.table-container {
+    overflow-x: auto; /* Horizontal scrolling for table */
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    white-space: nowrap; /* Prevent content wrapping */
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+td span { /* Styling for "No actions available" */
+    color: #777;
+    font-style: italic;
+}
+
+.edit-btn, .delete-btn {
+    padding: 0;
+    margin-right: 5px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: inline-block; /* Ensure buttons are inline */
+    vertical-align: middle;
+}
+.icon {
+    width: 20px; /* Adjust icon size */
+    height: 20px;
+    vertical-align: middle;
+}
+
+.edit-btn:hover, .delete-btn:hover {
+    opacity: 0.7;
+}
+
+.back-btn{
+    padding: 10px 20px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 2rem; /* More space above back button */
+    display: block; /* Make it block */
+    width: fit-content; /* Fit content width */
+    margin-left: auto; /* Center horizontally */
+    margin-right: auto;
+}
+.back-btn:hover{
+    background-color: #5a6268;
+}
+
+.message{
+    color: #155724; /* Green for success */
+    background-color: #d4edda; /* Light green background */
+    border: 1px solid #c3e6cb;
+    padding: 10px 15px;
+    border-radius: 0.5em;
+    text-align: center;
+    font-weight: 500;
+    margin-bottom: 20px; /* Space below message */
+}
+.message:empty { /* Hide if empty */
+    display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .manage-licenses-container{
+        margin-top: 20vh; /* Adjust for potentially taller header */
+        max-width: 95%;
+    }
+
+    .search-section{
+        flex-direction: column;
+        align-items: stretch; /* Stretch items */
+    }
+    .search-section form{
+        width: 100%;
+        flex-direction: column; /* Stack search input and button */
+        align-items: stretch;
+    }
+    .search-section input[type="text"] {
+        margin-bottom: 10px; /* Space below input on mobile */
+    }
+
+    .add-license-btn {
+        width: 100%; /* Full width button */
+        margin-top: 10px;
+    }
+
+    th, td {
+        padding: 8px; /* Smaller padding on mobile */
+        white-space: normal; /* Allow wrapping */
+    }
+}

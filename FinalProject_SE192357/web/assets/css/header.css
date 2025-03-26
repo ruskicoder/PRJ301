@@ -106,6 +106,14 @@ a{
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
 }
 
+.nav-menu a img {
+    vertical-align: middle; /* Aligns image vertically with text */
+    height: 1em; /* Adjust size as needed */
+    width: auto;
+    margin-right: 4px; /* Optional space between icon and text */
+    /* Add other styling for icons if needed */
+}
+
 .user-section {
     display: flex;
     flex-direction: column;
@@ -340,6 +348,30 @@ a{
     background-color: #0056b3;
 }
 
+
+.titlegroup{
+    padding: 0px;
+    width:100%;
+}
+
+#guest-login {
+    background-color: #28a745; /* Bootstrap success (green) color */
+}
+#guest-login:hover{
+    background-color: #1e7e34;
+}
+
+#dashboard-icon, #logout-icon{
+    min-width: 100%;
+}
+
+.guest-operations {
+    display: flex;
+    flex-direction: column; /* Stack buttons vertically */
+    width: 100%; /* Occupy full width of the container */
+}
+
+
 @media (max-width: 768px) {
     .header-container {
         flex-direction: column;
@@ -373,24 +405,3 @@ a{
     }
 }
 
-.titlegroup{
-    padding: 0px;
-    width:100%;
-}
-
-#guest-login {
-    background-color: #28a745; /* Bootstrap success (green) color */
-}
-#guest-login:hover{
-    background-color: #1e7e34;
-}
-
-#dashboard-icon, #logout-icon{
-    min-width: 100%;
-}
-
-.guest-operations {
-    display: flex;
-    flex-direction: column; /* Stack buttons vertically */
-    width: 100%; /* Occupy full width of the container */
-}

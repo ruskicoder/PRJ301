@@ -1,0 +1,47 @@
+/* Add specific styles for forums page if needed */
+.search-add-container {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Space between search form and add button */
+    flex-wrap: wrap; /* Allow wrapping */
+    justify-content: center; /* Center content */
+}
+.search-add-container .search-form-part {
+    flex-grow: 1; /* Allow search form part to grow */
+    max-width: 800px; /* Max width for the search elements */
+}
+.add-forum-btn {
+    padding: 11px 20px; /* Match search button height */
+    background-color: #28a745; /* Green */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    height: 44px;
+    box-sizing: border-box;
+    text-decoration: none; /* Remove underline if using <a> */
+    white-space: nowrap; /* Prevent text wrapping */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    line-height: 1.5; /* Adjust line height for vertical centering */
+}
+
+.add-forum-btn:hover {
+    background-color: #1e7e34;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .search-add-container {
+        flex-direction: column; /* Stack vertically on smaller screens */
+        align-items: stretch; /* Stretch items */
+    }
+    .search-add-container .search-form-part {
+        width: 100%;
+    }
+    .add-forum-btn {
+        width: 100%; /* Full width button */
+        margin-top: 10px; /* Add space when stacked */
+    }
+}

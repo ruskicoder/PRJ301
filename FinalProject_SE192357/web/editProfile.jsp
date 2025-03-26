@@ -195,7 +195,8 @@
 
         </div>
 
-        
+
         <script src="assets/js/editProfile.js"></script>
+        <%@include file="footer.jsp" %>
     </body>
 </html>

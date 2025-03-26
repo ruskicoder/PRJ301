@@ -143,5 +143,7 @@
         </div>
 
         <script src="assets/js/manageArticles.js"></script>
+
+        <%@include file="footer.jsp" %>
     </body>
 </html>

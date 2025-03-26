@@ -56,13 +56,23 @@
             </div>
             <div class="main-content">
                 <% if (AuthUtils.isLoggedIn(session)) { %>
-                <form action="main" method="post">
+                <form action="main" method="post" style="display: inline-block; margin-right: 10px;"> <%-- Use inline-block for side-by-side --%>
                     <input type="hidden" name="action" value="direct" />
                     <input type="hidden" name="direct" value="manageArticles.jsp" />
                     <button type="submit" class="manage-articles-btn">Quản Lý Bài Viết</button>
                 </form>
+                <%-- Add Manage Licenses Button (visible to Admins and Users, not Guests) --%>
+                <% if (!AuthUtils.isGuest(session)) { %>
+                <form action="main" method="post" style="display: inline-block;"> <%-- Use inline-block for side-by-side --%>
+                    <input type="hidden" name="action" value="direct" />
+                    <input type="hidden" name="direct" value="manageLicenses.jsp" />
+                    <button type="submit" class="manage-articles-btn">Quản Lý GPLX</button> <%-- Reusing style for consistency --%>
+                </form>
+                <% } %>
                 <% }%>
             </div>
         </div>
+
+        <%@include file="footer.jsp" %>
     </body>
 </html>

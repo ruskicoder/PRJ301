@@ -73,5 +73,6 @@
             </form>
         </div>
         <script src="assets/js/adminEditProfile.js"></script>
+        <%@include file="footer.jsp" %>
     </body>
 </html>

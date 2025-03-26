@@ -10,7 +10,6 @@ import dao.UserDAO;
 import dto.ArticleDTO;
 import dto.UserDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,6 +26,10 @@ import utils.AuthUtils;
 import utils.Base64Image;
 import utils.Hash;
 import utils.TextConvert;
+import dao.LicenseDAO;
+import dto.LicenseDTO;
+import java.util.ArrayList;
+import java.util.Collections; // If needed for empty list
 
 /**
  *
@@ -37,6 +40,7 @@ public class main extends HttpServlet {
 
     private static final String DASHBOARD_PAGE = "dashboard.jsp";
     private static final String HOMEPAGE = "homepage.jsp";
+    private static final String FORUMS_PAGE = "forums.jsp";
     private static final String LOGIN_PAGE = "login.jsp";
     private static final String REGISTER_PAGE = "register.jsp";
     private static final String ERROR_PAGE = "error.jsp";
@@ -48,6 +52,8 @@ public class main extends HttpServlet {
     private static final String DETAILS_PAGE = "details.jsp";
     private static final String ERROR_404 = "Error 404: Page not found!";
     private static final String ERROR_403 = "Error 403: Forbidden request!";
+    private static final String MANAGE_LICENSES_PAGE = "manageLicenses.jsp";
+    private static final String LICENSE_FORM_PAGE = "licenseForm.jsp";
 
     private String processLogin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -91,80 +97,130 @@ public class main extends HttpServlet {
             throws ServletException, IOException {
         String url = ERROR_PAGE;
         String direct = request.getParameter("direct");
+        HttpSession session = request.getSession(false); // Get session once
 
         if (direct != null && !direct.isEmpty()) {
-            // Check for articleForm.jsp and session
-            if ("articleForm.jsp".equals(direct)) {
-                HttpSession session = request.getSession(false);
-                if (session == null || !AuthUtils.isLoggedIn(session)) {
+            url = direct; // Assume valid direct initially
+
+            // --- Session/Auth Checks First ---
+            if (session == null || !AuthUtils.isLoggedIn(session)) {
+                // Redirect non-logged-in users trying to access protected pages
+                if (direct.equals(MANAGE_ARTICLES_PAGE) || direct.equals(ARTICLE_FORM_PAGE)
+                        || direct.equals(EDIT_PROFILE_PAGE) || direct.equals(ADMIN_EDIT_PROFILE_PAGE)
+                        || direct.equals(CHANGE_PASSWORD_PAGE) || direct.equals(MANAGE_LICENSES_PAGE)
+                        || direct.equals(LICENSE_FORM_PAGE) || direct.equals(DASHBOARD_PAGE)) {
                     request.setAttribute("errorMessage", "You need to login first.");
-                    return ERROR_PAGE;  // Or LOGIN_PAGE, depending on your preference
+                    return ERROR_PAGE; // Or LOGIN_PAGE
+                }
+            } else { // User is logged in, perform role-specific checks
+                if (AuthUtils.isGuest(session)) {
+                    // Guests restricted from certain pages
+                    if (direct.equals(ARTICLE_FORM_PAGE) || direct.equals(CHANGE_PASSWORD_PAGE)
+                            || direct.equals(EDIT_PROFILE_PAGE) || direct.equals(MANAGE_LICENSES_PAGE)
+                            || direct.equals(LICENSE_FORM_PAGE)) {
+                        request.setAttribute("errorMessage", "Guests do not have permission to access this page.");
+                        return ERROR_PAGE; // Or dashboard with a message
+                    }
+                }
+                if (!AuthUtils.isAdmin(session)) {
+                    // Non-admins restricted from admin pages
+                    if (direct.equals(ADMIN_EDIT_PROFILE_PAGE) || direct.equals(LICENSE_FORM_PAGE)) {
+                        request.setAttribute("errorMessage", "Access Denied: Administrators only.");
+                        return ERROR_PAGE; // Or dashboard
+                    }
                 }
             }
 
-            // Check for manageArticles.jsp and load articles
-            if ("manageArticles.jsp".equals(direct)) {
+            // --- Load Data Based on Target Page ---
+            if (direct.equals(MANAGE_ARTICLES_PAGE)) {
                 ArticleDAO articleDAO = new ArticleDAO();
-                List<ArticleDTO> articles = articleDAO.readAll();
+                List<ArticleDTO> articles = articleDAO.readAll(); // Load initial articles
+                if (articles != null) { // Sort by newest by default when navigating directly
+                    articles.sort((a1, a2) -> a2.getPublishDate().compareTo(a1.getPublishDate()));
+                }
                 request.setAttribute("articles", articles);
-            }
-
-            // Check for changePassword.jsp
-            if ("changePassword.jsp".equals(direct)) {
-                HttpSession session = request.getSession(false);
-                if (session == null || !AuthUtils.isLoggedIn(session) || AuthUtils.isGuest(session)) {  // Also prevent guests
-                    request.setAttribute("errorMessage", "You must be logged in to change your password.");
-                    return ERROR_PAGE;
-                }
-            }
-
-            // Check for editProfile.jsp
-            if ("editProfile.jsp".equals(direct)) {
-                HttpSession session = request.getSession(false);
-                if (session == null || !AuthUtils.isLoggedIn(session)) {
-                    request.setAttribute("errorMessage", "You must be logged in to access this page.");
-                    return ERROR_PAGE; // Or LOGIN_PAGE, depending on your preference
-                }
-
-                // Always load user data for the logged-in user.
-                UserDTO user = AuthUtils.getUser(session); // Get the logged-in user
+            } else if (direct.equals(EDIT_PROFILE_PAGE) && session != null && AuthUtils.isLoggedIn(session)) {
+                // Reload user data, including list for admins
+                UserDTO user = AuthUtils.getUser(session);
                 request.setAttribute("user", user);
-
-                // If the user is an admin, also load the user list for management.
                 if (AuthUtils.isAdmin(session)) {
                     UserDAO userDAO = new UserDAO();
                     List<UserDTO> users = userDAO.readAll(); // Load all users
                     request.setAttribute("users", users);
                 }
-            }
-            url = direct;
-            // Check if the request is for details.jsp from manageArticles.jsp
-            if ("details.jsp".equals(direct)) {
-                String source = request.getParameter("source");
-                if ("manageArticles".equals(source)) {
-                    // Set an attribute to indicate that details.jsp was accessed from manageArticles.jsp
-                    request.setAttribute("fromManageArticles", true);
-                }
+            } else if (direct.equals(DETAILS_PAGE)) {
+                // Logic for loading article details (seems mostly correct)
                 String articleId = request.getParameter("id");
                 if (articleId != null && !articleId.isEmpty()) {
                     ArticleDAO dao = new ArticleDAO();
                     ArticleDTO article = dao.readById(articleId);
                     if (article != null) {
-                        request.setAttribute("article", article); // Set the article as a request attribute
+                        request.setAttribute("article", article);
                     } else {
-                        //If Article not found, redirect
                         request.setAttribute("errorMessage", "Article not found.");
                         url = ERROR_PAGE;
                     }
                 } else {
-                    //If no Id, redirect
                     request.setAttribute("errorMessage", "Article ID is required.");
                     url = ERROR_PAGE;
                 }
+                // Keep track of source for back button
+                String source = request.getParameter("source");
+                if ("manageArticles".equals(source)) {
+                    request.setAttribute("fromManageArticles", true);
+                }
+            } // --- New Logic for License Pages ---
+            else if (direct.equals(MANAGE_LICENSES_PAGE) && session != null && AuthUtils.isLoggedIn(session) && !AuthUtils.isGuest(session)) {
+                LicenseDAO licenseDAO = new LicenseDAO();
+                List<LicenseDTO> licenses;
+                UserDTO currentUser = AuthUtils.getUser(session);
+                if (AuthUtils.isAdmin(session)) {
+                    licenses = licenseDAO.readAll(); // Admin sees all
+                } else {
+                    // User sees only their own license - search by full name
+                    licenses = licenseDAO.searchByFullName(currentUser.getFullName());
+                }
+                request.setAttribute("licenses", licenses);
+            } else if (direct.equals(LICENSE_FORM_PAGE) && session != null && AuthUtils.isAdmin(session)) {
+                String formAction = request.getParameter("formAction");
+                String licenseID = request.getParameter("licenseID");
+
+                // Load users for dropdown
+                UserDAO userDAO = new UserDAO();
+                List<UserDTO> allUsers = userDAO.readAll();
+                List<UserDTO> eligibleUsers = allUsers.stream()
+                        .filter(u -> u.getCitizenID() != -1)
+                        .collect(Collectors.toList());
+                request.setAttribute("eligibleUsers", eligibleUsers); // Set for JSP
+
+                if ("edit".equals(formAction) && licenseID != null && !licenseID.isEmpty()) {
+                    LicenseDAO licenseDAO = new LicenseDAO();
+                    LicenseDTO license = licenseDAO.readById(licenseID);
+                    if (license != null) {
+                        request.setAttribute("license", license); // Set license data for pre-filling form
+                    } else {
+                        request.setAttribute("errorMessage", "License not found for editing.");
+                        url = processDirect_Data(request, response); // Redirect back to manage licenses
+                    }
+                } else if ("edit".equals(formAction)) {
+                    request.setAttribute("errorMessage", "License ID required for edit.");
+                    url = processDirect_Data(request, response); // Redirect back to manage licenses
+                }
+                // If action is 'add', just load users and proceed to form
+                request.setAttribute("formAction", formAction); // Pass action type to JSP
             }
+            // --- End License Logic ---
 
         } else {
-            request.setAttribute("errorMessage", ERROR_404);
+            // If direct is null or empty, handle based on login status
+            if (session != null && AuthUtils.isLoggedIn(session)) {
+                // If logged in, default to dashboard or homepage
+                url = DASHBOARD_PAGE; // Or HOMEPAGE via processSortArticles
+                // If going to dashboard, you might want to load initial dashboard data here
+            } else {
+                url = LOGIN_PAGE; // Default to login if not logged in and no destination
+            }
+            request.setAttribute("errorMessage", ERROR_404 + " No destination specified."); // More specific error
         }
         return url;
     }
@@ -512,8 +568,6 @@ public class main extends HttpServlet {
 
         List<ArticleDTO> articles = articleDAO.searchBy("News", "ArticleType");
 
-        int subListMax = 9;
-
         if (articles != null && !articles.isEmpty()) {
             // Sort based on filterDate parameter
             if ("Oldest".equals(filterDate)) {
@@ -522,10 +576,6 @@ public class main extends HttpServlet {
                 articles.sort((a1, a2) -> a2.getPublishDate().compareTo(a1.getPublishDate())); // Sort newest first
             }
 
-            // Apply sublist limit if needed (kept original logic, consider if this is always desired)
-            if (articles.size() > subListMax) {
-                articles = articles.subList(0, subListMax);
-            }
         }
 
         request.setAttribute("articles", articles);
@@ -872,6 +922,7 @@ public class main extends HttpServlet {
             } else { // Default to Newest or if filterDate is "Newest" or null/invalid
                 articles.sort((a1, a2) -> a2.getPublishDate().compareTo(a1.getPublishDate())); // Sort newest first
             }
+
         }
 
         request.setAttribute("articles", articles);
@@ -881,6 +932,353 @@ public class main extends HttpServlet {
 
         return HOMEPAGE; // Return to homepage with filtered/sorted news
     }
+
+    // Add new method processSortForums
+    private String processSortForums(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Authorization Check: Ensure user is logged in and not a guest
+        HttpSession session = request.getSession(false);
+        if (session == null || !AuthUtils.isLoggedIn(session) || AuthUtils.isGuest(session)) {
+            request.setAttribute("errorMessage", "You must be logged in as a User or Admin to access the forums.");
+            return ERROR_PAGE;
+        }
+
+        ArticleDAO articleDAO = new ArticleDAO();
+        String filterDate = request.getParameter("filterDate"); // Get filter date parameter
+
+        // Fetch only Forum articles
+        List<ArticleDTO> articles = articleDAO.searchBy("Forum", "ArticleType");
+
+        if (articles != null && !articles.isEmpty()) {
+            // Sort based on filterDate parameter
+            if ("Oldest".equals(filterDate)) {
+                articles.sort((a1, a2) -> a1.getPublishDate().compareTo(a2.getPublishDate())); // Sort oldest first
+            } else { // Default to Newest
+                articles.sort((a1, a2) -> a2.getPublishDate().compareTo(a1.getPublishDate())); // Sort newest first
+            }
+        }
+
+        request.setAttribute("articles", articles); // Pass the full list
+        request.setAttribute("filterDate", filterDate == null ? "Newest" : filterDate);
+
+        return FORUMS_PAGE;
+    }
+
+// Add new method processSearchForums
+    private String processSearchForums(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Authorization Check: Ensure user is logged in and not a guest
+        HttpSession session = request.getSession(false);
+        if (session == null || !AuthUtils.isLoggedIn(session) || AuthUtils.isGuest(session)) {
+            request.setAttribute("errorMessage", "You must be logged in as a User or Admin to access the forums.");
+            return ERROR_PAGE;
+        }
+
+        String searchTerm = request.getParameter("searchTerm");
+        String filterDate = request.getParameter("filterDate");
+
+        ArticleDAO articleDAO = new ArticleDAO();
+        List<ArticleDTO> articles;
+
+        // Start by getting articles of type "Forum"
+        articles = articleDAO.searchBy("Forum", "ArticleType");
+
+        // If there's a search term, filter further
+        if (articles != null && searchTerm != null && !searchTerm.trim().isEmpty()) {
+            String lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
+            articles = articles.stream()
+                    .filter(article -> (article.getTitle() != null && article.getTitle().toLowerCase().contains(lowerCaseSearchTerm))
+                    || (article.getSubtitle() != null && article.getSubtitle().toLowerCase().contains(lowerCaseSearchTerm))
+                    || (article.getContent() != null && article.getContent().toLowerCase().contains(lowerCaseSearchTerm))
+                    || (article.getAuthor() != null && article.getAuthor().toLowerCase().contains(lowerCaseSearchTerm))) // Also search by author for forums
+                    .collect(Collectors.toList());
+        }
+
+        // Sort the filtered results based on Date
+        if (articles != null && !articles.isEmpty()) {
+            if ("Oldest".equals(filterDate)) {
+                articles.sort((a1, a2) -> a1.getPublishDate().compareTo(a2.getPublishDate())); // Sort oldest first
+            } else { // Default to Newest
+                articles.sort((a1, a2) -> a2.getPublishDate().compareTo(a1.getPublishDate())); // Sort newest first
+            }
+            // No sublist limit here for pagination
+        }
+
+        request.setAttribute("articles", articles); // Pass the full list
+        // Keep search parameters in request scope for the form fields
+        request.setAttribute("searchTerm", searchTerm);
+        request.setAttribute("filterDate", filterDate == null ? "Newest" : filterDate);
+
+        return FORUMS_PAGE;
+    }
+
+    private String processSearchLicenses(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        // Auth check
+        if (session == null || !AuthUtils.isLoggedIn(session) || AuthUtils.isGuest(session)) {
+            request.setAttribute("errorMessage", "You must be logged in to search licenses.");
+            return ERROR_PAGE; // Or LOGIN_PAGE
+        }
+
+        String searchTerm = request.getParameter("searchTerm");
+        LicenseDAO licenseDAO = new LicenseDAO();
+        List<LicenseDTO> licenses = new ArrayList<>(); // Initialize to avoid null pointer
+        UserDTO currentUser = AuthUtils.getUser(session);
+
+        if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+            LicenseDTO foundLicense = licenseDAO.readById(searchTerm.trim());
+            if (foundLicense != null) {
+                if (AuthUtils.isAdmin(session)) {
+                    // Admin sees any license found by ID
+                    licenses.add(foundLicense);
+                } else {
+                    // User only sees the license if the FullName matches their own
+                    if (foundLicense.getFullName().equals(currentUser.getFullName())) {
+                        licenses.add(foundLicense);
+                    } else {
+                        request.setAttribute("message", "License found, but it does not belong to you.");
+                        // Optionally load their own license anyway if you want to show it alongside message
+                        // licenses = licenseDAO.searchByFullName(currentUser.getFullName());
+                    }
+                }
+            } else {
+                request.setAttribute("message", "No license found with that ID.");
+                // Optionally load their own license if User, or all if Admin
+                if (AuthUtils.isAdmin(session)) {
+                    licenses = licenseDAO.readAll();
+                } else {
+                    licenses = licenseDAO.searchByFullName(currentUser.getFullName());
+                }
+            }
+        } else {
+            // If search term is empty, load default view
+            if (AuthUtils.isAdmin(session)) {
+                licenses = licenseDAO.readAll(); // Admin sees all
+            } else {
+                licenses = licenseDAO.searchByFullName(currentUser.getFullName()); // User sees their own
+            }
+            request.setAttribute("message", "Please enter a License ID to search.");
+        }
+
+        request.setAttribute("licenses", licenses);
+        return MANAGE_LICENSES_PAGE;
+    }
+
+    private String processAddLicense(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        // Auth check - Admin Only
+        if (session == null || !AuthUtils.isLoggedIn(session) || !AuthUtils.isAdmin(session)) {
+            request.setAttribute("errorMessage", "Access Denied: Administrators only.");
+            return ERROR_PAGE;
+        }
+
+        String licenseID = request.getParameter("licenseIDInput"); // Name from the input field
+        String fullName = request.getParameter("fullName");
+        String licenseType = request.getParameter("licenseType");
+        String lRegDateStr = request.getParameter("lRegDate");
+        String expDateStr = request.getParameter("expDate");
+
+        // Basic Validation
+        if (licenseID == null || licenseID.trim().isEmpty()
+                || fullName == null || fullName.trim().isEmpty()
+                || licenseType == null || licenseType.trim().isEmpty()
+                || lRegDateStr == null || lRegDateStr.trim().isEmpty()
+                || expDateStr == null || expDateStr.trim().isEmpty()) {
+            request.setAttribute("message", "All fields are required.");
+            // Reload users for dropdown and return to form
+            UserDAO userDAO = new UserDAO();
+            request.setAttribute("eligibleUsers", userDAO.readAll().stream().filter(u -> u.getCitizenID() != -1).collect(Collectors.toList()));
+            request.setAttribute("formAction", "add"); // Keep form state
+            return LICENSE_FORM_PAGE;
+        }
+
+        LicenseDAO licenseDAO = new LicenseDAO();
+
+        // Check if License ID already exists
+        if (licenseDAO.readById(licenseID) != null) {
+            request.setAttribute("message", "License ID already exists.");
+            UserDAO userDAO = new UserDAO();
+            request.setAttribute("eligibleUsers", userDAO.readAll().stream().filter(u -> u.getCitizenID() != -1).collect(Collectors.toList()));
+            request.setAttribute("formAction", "add"); // Keep form state
+            // Pre-fill entered data back into the form
+            request.setAttribute("license", new LicenseDTO(licenseID, fullName, licenseType, null, null)); // Create temporary DTO
+            try {
+                request.setAttribute("lRegDateValue", lRegDateStr); // Pass string dates back
+                request.setAttribute("expDateValue", expDateStr);
+            } catch (Exception e) {/* Ignore parsing error here */
+            }
+
+            return LICENSE_FORM_PAGE;
+        }
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date lRegDate = new Date(sdf.parse(lRegDateStr).getTime());
+            Date expDate = new Date(sdf.parse(expDateStr).getTime());
+
+            // Basic date validation: expiry date should be after registration date
+            if (expDate.before(lRegDate)) {
+                request.setAttribute("message", "Expiry date must be after registration date.");
+                UserDAO userDAO = new UserDAO();
+                request.setAttribute("eligibleUsers", userDAO.readAll().stream().filter(u -> u.getCitizenID() != -1).collect(Collectors.toList()));
+                request.setAttribute("formAction", "add");
+                // Pre-fill data
+                request.setAttribute("license", new LicenseDTO(licenseID, fullName, licenseType, null, null));
+                request.setAttribute("lRegDateValue", lRegDateStr);
+                request.setAttribute("expDateValue", expDateStr);
+                return LICENSE_FORM_PAGE;
+            }
+
+            LicenseDTO newLicense = new LicenseDTO(licenseID, fullName, licenseType, lRegDate, expDate);
+            boolean success = licenseDAO.create(newLicense);
+
+            if (success) {
+                request.setAttribute("message", "License added successfully!");
+            } else {
+                request.setAttribute("message", "Failed to add license.");
+            }
+        } catch (ParseException e) {
+            request.setAttribute("message", "Invalid date format. Please use YYYY-MM-DD.");
+            UserDAO userDAO = new UserDAO();
+            request.setAttribute("eligibleUsers", userDAO.readAll().stream().filter(u -> u.getCitizenID() != -1).collect(Collectors.toList()));
+            request.setAttribute("formAction", "add");
+            // Pre-fill data
+            request.setAttribute("license", new LicenseDTO(licenseID, fullName, licenseType, null, null));
+            request.setAttribute("lRegDateValue", lRegDateStr);
+            request.setAttribute("expDateValue", expDateStr);
+            return LICENSE_FORM_PAGE; // Go back to form on date error
+        } catch (Exception e) { // Catch broader errors
+            request.setAttribute("message", "An error occurred: " + e.getMessage());
+            UserDAO userDAO = new UserDAO();
+            request.setAttribute("eligibleUsers", userDAO.readAll().stream().filter(u -> u.getCitizenID() != -1).collect(Collectors.toList()));
+            request.setAttribute("formAction", "add");
+            // Pre-fill data
+            request.setAttribute("license", new LicenseDTO(licenseID, fullName, licenseType, null, null));
+            request.setAttribute("lRegDateValue", lRegDateStr);
+            request.setAttribute("expDateValue", expDateStr);
+            return LICENSE_FORM_PAGE;
+        }
+
+        // Redirect back to manage licenses page after add/fail
+        request.setAttribute("direct", MANAGE_LICENSES_PAGE); // Set target for processDirect_Data
+        return processDirect_Data(request, response); // Reload the manage page
+    }
+
+    private String processEditLicense(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        // Auth check - Admin Only
+        if (session == null || !AuthUtils.isLoggedIn(session) || !AuthUtils.isAdmin(session)) {
+            request.setAttribute("errorMessage", "Access Denied: Administrators only.");
+            return ERROR_PAGE;
+        }
+
+        String licenseID = request.getParameter("licenseID"); // This comes from the hidden input
+        String fullName = request.getParameter("fullName");
+        String licenseType = request.getParameter("licenseType");
+        String lRegDateStr = request.getParameter("lRegDate");
+        String expDateStr = request.getParameter("expDate");
+
+        // Basic Validation
+        if (licenseID == null || licenseID.trim().isEmpty()
+                || // ID is crucial for update
+                fullName == null || fullName.trim().isEmpty()
+                || licenseType == null || licenseType.trim().isEmpty()
+                || lRegDateStr == null || lRegDateStr.trim().isEmpty()
+                || expDateStr == null || expDateStr.trim().isEmpty()) {
+            request.setAttribute("message", "All fields are required.");
+            // Reload users and existing license data for the form
+            UserDAO userDAO = new UserDAO();
+            request.setAttribute("eligibleUsers", userDAO.readAll().stream().filter(u -> u.getCitizenID() != -1).collect(Collectors.toList()));
+            LicenseDAO licenseDAO = new LicenseDAO();
+            request.setAttribute("license", licenseDAO.readById(licenseID)); // Reload original data if possible
+            request.setAttribute("formAction", "edit");
+            return LICENSE_FORM_PAGE;
+        }
+
+        LicenseDAO licenseDAO = new LicenseDAO();
+        LicenseDTO existingLicense = licenseDAO.readById(licenseID);
+
+        if (existingLicense == null) {
+            request.setAttribute("message", "License to update not found.");
+            request.setAttribute("direct", MANAGE_LICENSES_PAGE);
+            return processDirect_Data(request, response); // Go back to list
+        }
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date lRegDate = new Date(sdf.parse(lRegDateStr).getTime());
+            Date expDate = new Date(sdf.parse(expDateStr).getTime());
+
+            // Date validation
+            if (expDate.before(lRegDate)) {
+                request.setAttribute("message", "Expiry date must be after registration date.");
+                UserDAO userDAO = new UserDAO();
+                request.setAttribute("eligibleUsers", userDAO.readAll().stream().filter(u -> u.getCitizenID() != -1).collect(Collectors.toList()));
+                request.setAttribute("license", existingLicense); // Pass original license back
+                request.setAttribute("formAction", "edit");
+                return LICENSE_FORM_PAGE;
+            }
+
+            // Update the existing DTO
+            existingLicense.setFullName(fullName);
+            existingLicense.setLicenseType(licenseType);
+            existingLicense.setlRegDate(lRegDate);
+            existingLicense.setExpDate(expDate);
+
+            boolean success = licenseDAO.update(existingLicense);
+
+            if (success) {
+                request.setAttribute("message", "License updated successfully!");
+            } else {
+                request.setAttribute("message", "Failed to update license.");
+            }
+        } catch (ParseException e) {
+            request.setAttribute("message", "Invalid date format. Please use YYYY-MM-DD.");
+            UserDAO userDAO = new UserDAO();
+            request.setAttribute("eligibleUsers", userDAO.readAll().stream().filter(u -> u.getCitizenID() != -1).collect(Collectors.toList()));
+            request.setAttribute("license", existingLicense); // Pass original license back
+            request.setAttribute("formAction", "edit");
+            return LICENSE_FORM_PAGE; // Go back to form on date error
+        } catch (Exception e) { // Catch broader errors
+            request.setAttribute("message", "An error occurred during update: " + e.getMessage());
+            UserDAO userDAO = new UserDAO();
+            request.setAttribute("eligibleUsers", userDAO.readAll().stream().filter(u -> u.getCitizenID() != -1).collect(Collectors.toList()));
+            request.setAttribute("license", existingLicense); // Pass original license back
+            request.setAttribute("formAction", "edit");
+            return LICENSE_FORM_PAGE;
+        }
+
+        // Redirect back to manage licenses page after update/fail
+        request.setAttribute("direct", MANAGE_LICENSES_PAGE);
+        return processDirect_Data(request, response);
+    }
+
+    private String processDeleteLicense(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        // Auth check - Admin Only
+        if (session == null || !AuthUtils.isLoggedIn(session) || !AuthUtils.isAdmin(session)) {
+            request.setAttribute("errorMessage", "Access Denied: Administrators only.");
+            return ERROR_PAGE;
+        }
+
+        String licenseID = request.getParameter("licenseID");
+
+        if (licenseID == null || licenseID.trim().isEmpty()) {
+            request.setAttribute("message", "License ID is required for deletion.");
+        } else {
+            LicenseDAO licenseDAO = new LicenseDAO();
+            boolean success = licenseDAO.delete(licenseID);
+            if (success) {
+                request.setAttribute("message", "License deleted successfully!");
+            } else {
+                request.setAttribute("message", "Failed to delete license. It might not exist or another error occurred.");
+            }
+        }
+
+        // Redirect back to manage licenses page
+        request.setAttribute("direct", MANAGE_LICENSES_PAGE);
+        return processDirect_Data(request, response);
+    }
+    
+    
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -927,7 +1325,7 @@ public class main extends HttpServlet {
                     case "editAdminProfile":
                         url = processEditAdminProfile(request, response);
                         break;
-                    case "editUserProfileForm": // For displaying the edit form
+                    case "editUserProfileForm":
                         url = processEditUserProfileForm(request, response);
                         break;
                     case "editOtherUserProfile":
@@ -944,6 +1342,24 @@ public class main extends HttpServlet {
                         break;
                     case "searchHomepageNews":
                         url = processSearchHomepageNews(request, response);
+                        break;
+                    case "sortForums":
+                        url = processSortForums(request, response);
+                        break;
+                    case "searchForums":
+                        url = processSearchForums(request, response);
+                        break;
+                    case "searchLicenses":
+                        url = processSearchLicenses(request, response);
+                        break;
+                    case "addLicense":
+                        url = processAddLicense(request, response);
+                        break;
+                    case "editLicense":
+                        url = processEditLicense(request, response);
+                        break;
+                    case "deleteLicense":
+                        url = processDeleteLicense(request, response);
                         break;
                     default:
                         url = ERROR_PAGE;

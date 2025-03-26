@@ -77,5 +77,6 @@
         </div>
 
         <script src="assets/js/register.js"></script>
+        <%@include file="footer.jsp" %>
     </body>
 </html>

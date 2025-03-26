@@ -114,5 +114,6 @@
             </form>
         </div>
         <script src="assets/js/articleForm.js"></script>
+        <%@include file="footer.jsp" %>
     </body>
 </html>

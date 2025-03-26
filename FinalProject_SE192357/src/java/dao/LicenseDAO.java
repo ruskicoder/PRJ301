@@ -6,18 +6,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import utils.DBUtils;
 
-public class LicenseDAO implements IDAO<LicenseDTO, String>{
+public class LicenseDAO implements IDAO<LicenseDTO, String> {
 
     @Override
     public boolean create(LicenseDTO entity) {
         String sql = "INSERT INTO tblLicense (LicenseID, FullName, LicenseType, LRegDate, ExpDate) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, entity.getLicenseID());
             ps.setString(2, entity.getFullName());
             ps.setString(3, entity.getLicenseType());
@@ -36,8 +37,8 @@ public class LicenseDAO implements IDAO<LicenseDTO, String>{
         List<LicenseDTO> list = new ArrayList<>();
         String sql = "SELECT LicenseID, FullName, LicenseType, LRegDate, ExpDate FROM tblLicense";
         try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 LicenseDTO license = new LicenseDTO(
                         rs.getString("LicenseID"),
@@ -83,7 +84,7 @@ public class LicenseDAO implements IDAO<LicenseDTO, String>{
     public boolean update(LicenseDTO entity) {
         String sql = "UPDATE tblLicense SET FullName = ?, LicenseType = ?, LRegDate = ?, ExpDate = ? WHERE LicenseID = ?";
         try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, entity.getFullName());
             ps.setString(2, entity.getLicenseType());
             ps.setDate(3, entity.getlRegDate());
@@ -101,7 +102,7 @@ public class LicenseDAO implements IDAO<LicenseDTO, String>{
     public boolean delete(String id) {
         String sql = "DELETE FROM tblLicense WHERE LicenseID = ?";
         try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, id);
             int n = ps.executeUpdate();
             return n > 0;
@@ -110,22 +111,22 @@ public class LicenseDAO implements IDAO<LicenseDTO, String>{
             return false;
         }
     }
-    
+
     @Override
     public List<LicenseDTO> search(String searchTerm) {
         List<LicenseDTO> list = new ArrayList<>();
         String sql = "SELECT LicenseID, FullName, LicenseType, LRegDate, ExpDate FROM tblLicense WHERE FullName LIKE ?";
         try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + searchTerm + "%");  // Use % for wildcard search
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     LicenseDTO license = new LicenseDTO(
-                        rs.getString("LicenseID"),
-                        rs.getString("FullName"),
-                        rs.getString("LicenseType"),
-                        rs.getDate("LRegDate"),
-                        rs.getDate("ExpDate")
+                            rs.getString("LicenseID"),
+                            rs.getString("FullName"),
+                            rs.getString("LicenseType"),
+                            rs.getDate("LRegDate"),
+                            rs.getDate("ExpDate")
                     );
                     list.add(license);
                 }
@@ -133,6 +134,35 @@ public class LicenseDAO implements IDAO<LicenseDTO, String>{
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(LicenseDAO.class.getName()).log(Level.SEVERE, null, ex);
             return null;
+        }
+        return list;
+    }
+
+    public List<LicenseDTO> searchByFullName(String fullName) {
+        List<LicenseDTO> list = new ArrayList<>();
+        // Use exact match for full name as it comes from a trusted source (user session)
+        String sql = "SELECT LicenseID, FullName, LicenseType, LRegDate, ExpDate FROM tblLicense WHERE FullName = ?";
+        if (fullName == null || fullName.trim().isEmpty()) {
+            return Collections.emptyList(); // Return empty list if name is invalid
+        }
+        try (Connection conn = DBUtils.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, fullName);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    LicenseDTO license = new LicenseDTO(
+                            rs.getString("LicenseID"),
+                            rs.getString("FullName"),
+                            rs.getString("LicenseType"),
+                            rs.getDate("LRegDate"),
+                            rs.getDate("ExpDate")
+                    );
+                    list.add(license);
+                }
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(LicenseDAO.class.getName()).log(Level.SEVERE, "Error searching license by full name: " + fullName, ex);
+            return Collections.emptyList(); // Return empty list on error
         }
         return list;
     }

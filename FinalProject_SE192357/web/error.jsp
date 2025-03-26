@@ -21,14 +21,16 @@
             <h1>Error!</h1>
             <p>
                 <%
-                            String errorMessage = (String) request.getAttribute("errorMessage");
-                            if (errorMessage != null && !errorMessage.isEmpty()) {
-                                out.println(errorMessage);
-                            }
-                        %>
+                    String errorMessage = (String) request.getAttribute("errorMessage");
+                    if (errorMessage != null && !errorMessage.isEmpty()) {
+                        out.println(errorMessage);
+                    }
+                %>
             </p>
-             <a href="login.jsp" class="back-link">Back to Login</a>
-           
+            <a href="login.jsp" class="back-link">Back to Login</a>
+
         </div>
+
+        <%@include file="footer.jsp" %>
     </body>
 </html>

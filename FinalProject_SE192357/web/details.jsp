@@ -57,11 +57,10 @@
                 <h1 class="article-title"><%= article.getTitle()%></h1>
                 <h2 class="article-subtitle"><%= article.getSubtitle() != null ? article.getSubtitle() : ""%></h2>
                 <p class="article-author">By <%= article.getAuthor()%></p>
+                <p class="article-type" style="font-weight: bold"><%= article.getArticleType()%></p> 
                 <% if (article.getPublishDate() != null) {%>
                 <p class="article-date">Published on: <%= article.getPublishDate()%></p>
                 <% }%>
-                <%-- Display Article Type --%>
-                <p class="article-type">Type: <%= article.getArticleType()%></p> 
 
                 <div class="article-body">
                     <%= TextConvert.convertToHTMLFormat(article.getContent())%>
@@ -73,5 +72,6 @@
             <div class="side-placeholder"></div>
         </div>
 
+        <%@include file="footer.jsp" %>
     </body>
 </html>

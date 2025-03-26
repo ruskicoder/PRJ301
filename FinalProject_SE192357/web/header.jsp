@@ -10,6 +10,7 @@
 
 
 <link rel="stylesheet" type="text/css" href="assets/css/header.css">
+<script src="assets/js/linkDirect.js" defer></script>
 
 
 <header class="wiki-header">
@@ -25,17 +26,22 @@
         <nav class="nav-menu" id="main-nav" name="main-nav">
             <ul>
                 <li>
-                    <form action="main" method="post">
-                        <input type="hidden" name="action" value="sortArticles" />
-                        <button type="submit" style = "background: none; border: none; padding: 0; margin: 0;" ><img src="assets/images/home_icon.png"></button>
-                    </form>
+                    <a href="javascript:void(0);" class="post-link"
+                       data-action="sortArticles"
+                       data-filterDate="Newest">
+                        <img src="assets/images/home_icon.png" alt="Home" style="vertical-align: middle;">
+                    </a>
                 </li>
-                <li><a href="#" id="nav-articles" name="navbar">BẢN TIN</a></li>
+                <li>
+                    <a href="javascript:void(0);" class="post-link" id="nav-forum" name="navbar"
+                       data-action="sortForums"
+                       data-filterDate="Newest">DIỄN ĐÀN</a>
+                </li>
                 <li><a href="#" id="nav-categories" name="navbar">ĐĂNG KIỂM</a></li>
                 <li><a href="#" id="nav-community" name="navbar">PHẠT NGUỘI</a></li>
                 <li><a href="#" id="nav-contribute" name="navbar">LỖI VI PHẠM</a></li>
                 <li><a href="#" id="nav-help" name="navbar">TRỢ GIÚP</a></li>
-                <li><a href="https://mt.gov.vn/vn/Pages/Trangchu.aspx" id="nav-about" name="navbar">VỀ BTGTVT</a></li>
+                <li><a href="https://mt.gov.vn/vn/Pages/Trangchu.aspx" id="nav-about" name="navbar" target="_blank" rel="noopener noreferrer">VỀ BTGTVT</a></li>
                 <li><a href="#" id="nav-contact" name="navbar">LIÊN HỆ</a></li>
             </ul>
         </nav>
