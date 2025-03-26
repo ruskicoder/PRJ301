@@ -7,152 +7,124 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import utils.DBUtils;
 
 public class CarDAO implements IDAO<CarDTO, String> {
 
     @Override
-    public boolean create(CarDTO entity) {
-        String sql = "INSERT INTO tblCars (Plate, CarName, CarImage, OwnerName, CarType, PlateType, RegDate, FirstRegDate, MfdDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public boolean create(CarDTO car) {
+        String sql = "INSERT INTO tblCars (CarID, CarName, CarImage, CarType) VALUES (?, ?, ?, ?)";
         try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, entity.getPlate());
-            ps.setString(2, entity.getCarName());
-            ps.setString(3, entity.getCarImage());
-            ps.setString(4, entity.getOwnerName());
-            ps.setString(5, entity.getCarType());
-            ps.setString(6, entity.getPlateType());
-            ps.setDate(7, entity.getRegDate());
-            ps.setDate(8, entity.getFirstRegDate());
-            ps.setDate(9, entity.getMfdDate());
-            int n = ps.executeUpdate();
-            return n > 0;
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(CarDAO.class.getName()).log(Level.SEVERE, null, ex);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, car.getCarID());
+            pstmt.setString(2, car.getCarName());
+            pstmt.setString(3, car.getCarImage());
+            pstmt.setString(4, car.getCarType());
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace(); // Proper error handling/logging
             return false;
         }
     }
-
     @Override
-    public List<CarDTO> readAll() {
-        List<CarDTO> list = new ArrayList<>();
-        String sql = "SELECT Plate, CarName, CarImage, OwnerName, CarType, PlateType, RegDate, FirstRegDate, MfdDate FROM tblCars";
+    public CarDTO readById(String carId) {
+        String sql = "SELECT CarID, CarName, CarImage, CarType FROM tblCars WHERE CarID = ?";
         try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                CarDTO car = new CarDTO(
-                        rs.getString("Plate"),
-                        rs.getString("CarName"),
-                        rs.getString("CarImage"),
-                        rs.getString("OwnerName"),
-                        rs.getString("CarType"),
-                        rs.getString("PlateType"),
-                        rs.getDate("RegDate"),
-                        rs.getDate("FirstRegDate"),
-                        rs.getDate("MfdDate")
-                );
-                list.add(car);
-            }
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(CarDAO.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        }
-        return list;
-    }
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-    @Override
-    public CarDTO readById(String id) {
-        String sql = "SELECT Plate, CarName, CarImage, OwnerName, CarType, PlateType, RegDate, FirstRegDate, MfdDate FROM tblCars WHERE Plate = ?";
-        try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
+            pstmt.setString(1, carId);
+            try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     return new CarDTO(
-                            rs.getString("Plate"),
+                            rs.getString("CarID"),
                             rs.getString("CarName"),
                             rs.getString("CarImage"),
-                            rs.getString("OwnerName"),
-                            rs.getString("CarType"),
-                            rs.getString("PlateType"),
-                            rs.getDate("RegDate"),
-                            rs.getDate("FirstRegDate"),
-                            rs.getDate("MfdDate")
+                            rs.getString("CarType")
                     );
                 }
             }
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(CarDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace(); // Proper error handling/logging
         }
         return null;
     }
-
     @Override
-    public boolean update(CarDTO entity) {
-        String sql = "UPDATE tblCars SET CarName = ?, CarImage = ?, OwnerName = ?, CarType = ?, PlateType = ?, RegDate = ?, FirstRegDate = ?, MfdDate = ? WHERE Plate = ?";
+    public List<CarDTO> readAll() {
+        List<CarDTO> cars = new ArrayList<>();
+        String sql = "SELECT CarID, CarName, CarImage, CarType FROM tblCars";
         try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, entity.getCarName());
-            ps.setString(2, entity.getCarImage());
-            ps.setString(3, entity.getOwnerName());
-            ps.setString(4, entity.getCarType());
-            ps.setString(5, entity.getPlateType());
-            ps.setDate(6, entity.getRegDate());
-            ps.setDate(7, entity.getFirstRegDate());
-            ps.setDate(8, entity.getMfdDate());
-            ps.setString(9, entity.getPlate());
-            int n = ps.executeUpdate();
-            return n > 0;
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(CarDAO.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                cars.add(new CarDTO(
+                        rs.getString("CarID"),
+                        rs.getString("CarName"),
+                        rs.getString("CarImage"),
+                        rs.getString("CarType")
+                ));
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace(); // Proper error handling/logging
+            return null; // Or an empty list, depending on your needs
+        }
+        return cars;
+    }
+    @Override
+    public boolean update(CarDTO car) {
+        String sql = "UPDATE tblCars SET CarName = ?, CarImage = ?, CarType = ? WHERE CarID = ?";
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, car.getCarName());
+            pstmt.setString(2, car.getCarImage());
+            pstmt.setString(3, car.getCarType());
+            pstmt.setString(4, car.getCarID());
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace(); // Proper error handling/logging
+             return false;
         }
     }
 
     @Override
-    public boolean delete(String id) {
-        String sql = "DELETE FROM tblCars WHERE Plate = ?";
+    public boolean delete(String carId) {
+        String sql = "DELETE FROM tblCars WHERE CarID = ?";
         try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, id);
-            int n = ps.executeUpdate();
-            return n > 0;
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(CarDAO.class.getName()).log(Level.SEVERE, null, ex);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, carId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException | ClassNotFoundException e) {
+           e.printStackTrace(); // Proper error handling/logging
             return false;
         }
     }
-
     @Override
     public List<CarDTO> search(String searchTerm) {
-        List<CarDTO> list = new ArrayList<>();
-        String sql = "SELECT Plate, CarName, CarImage, OwnerName, CarType, PlateType, RegDate, FirstRegDate, MfdDate FROM tblCars WHERE CarName LIKE ?";
+        List<CarDTO> result = new ArrayList<>();
+        String sql = "SELECT CarID, CarName, CarImage, CarType FROM tblCars WHERE CarName LIKE ?"; // Example: search by name
         try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, "%" + searchTerm + "%");
-            try (ResultSet rs = ps.executeQuery()) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, "%" + searchTerm + "%"); // Use % for wildcard search
+            try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    CarDTO car = new CarDTO(
-                            rs.getString("Plate"),
+                    result.add(new CarDTO(
+                            rs.getString("CarID"),
                             rs.getString("CarName"),
                             rs.getString("CarImage"),
-                            rs.getString("OwnerName"),
-                            rs.getString("CarType"),
-                            rs.getString("PlateType"),
-                            rs.getDate("RegDate"),
-                            rs.getDate("FirstRegDate"),
-                            rs.getDate("MfdDate")
-                    );
-                    list.add(car);
+                            rs.getString("CarType")
+                    ));
                 }
             }
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(CarDAO.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
+        } catch (SQLException | ClassNotFoundException e) {
+             e.printStackTrace(); // Proper error handling/logging
+            return null; // Or an empty list
         }
-        return list;
+        return result;
     }
 }

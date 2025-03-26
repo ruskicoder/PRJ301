@@ -95,9 +95,8 @@ public class UserDAO implements IDAO<UserDTO, String> {
         String sql = "UPDATE tblUsers SET Fullname = ?, Password = ?, Role = ?, Money = ?, UserImage = ?, CitizenID = ?, DOB = ? WHERE Username = ?";
         try (Connection conn = DBUtils.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
-            String hash = Hash.toSHA256(entity.getPassword());
             ps.setString(1, entity.getFullName());
-            ps.setString(2, hash);
+            ps.setString(2, entity.getPassword());
             ps.setString(3, entity.getRole());
             ps.setInt(4, entity.getMoney());
             ps.setString(5, entity.getUserImage());
@@ -130,6 +129,34 @@ public class UserDAO implements IDAO<UserDTO, String> {
     public List<UserDTO> search(String searchTerm) {
         List<UserDTO> list = new ArrayList<>();
         String sql = "SELECT Username, Fullname, Role, Money, UserImage, CitizenID, DOB FROM tblUsers WHERE Fullname LIKE ?";
+        try (Connection conn = DBUtils.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "%" + searchTerm + "%");
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    UserDTO user = new UserDTO(
+                            rs.getString("Username"),
+                            rs.getString("Fullname"),
+                            "",
+                            rs.getString("Role"),
+                            rs.getInt("Money"),
+                            rs.getString("UserImage"),
+                            rs.getLong("CitizenID"),
+                            rs.getDate("DOB")
+                    );
+                    list.add(user);
+                }
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+        return list;
+    }
+    
+    public List<UserDTO> searchBy(String searchTerm, String scope) {
+        List<UserDTO> list = new ArrayList<>();
+        String sql = "SELECT Username, Fullname, Role, Money, UserImage, CitizenID, DOB FROM tblUsers WHERE "+scope+" LIKE ?";
         try (Connection conn = DBUtils.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + searchTerm + "%");

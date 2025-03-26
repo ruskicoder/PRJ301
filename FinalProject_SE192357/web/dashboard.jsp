@@ -27,6 +27,14 @@
                     <img src="<%= loggedInUser.getUserImage() != null ? loggedInUser.getUserImage() : ""%>" alt="Avatar" class="avatar">
                     <h2 class="username-info"><%= loggedInUser.getUserName()%></h2>
 
+                    <% if (!AuthUtils.isGuest(session)) { %>
+                    <form action="main" method="post">
+                        <input type="hidden" name="action" value="direct" />
+                        <input type="hidden" name="direct" value="editProfile.jsp" />
+                        <button type="submit" class="edit-profile-btn">Edit Profile</button>
+                    </form>
+                    <% }%>
+
                     <p><strong>Họ và Tên:</strong> <%= loggedInUser.getFullName()%></p>
 
                     <% if (AuthUtils.isAdmin(session) || AuthUtils.isGuest(session)) {%>
@@ -51,7 +59,7 @@
                 <form action="main" method="post">
                     <input type="hidden" name="action" value="direct" />
                     <input type="hidden" name="direct" value="manageArticles.jsp" />
-                    <button type="submit" class="manage-articles-btn">Manage Articles</button>
+                    <button type="submit" class="manage-articles-btn">Quản Lý Bài Viết</button>
                 </form>
                 <% }%>
             </div>

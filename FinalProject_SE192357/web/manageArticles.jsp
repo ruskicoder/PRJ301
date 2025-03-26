@@ -14,13 +14,13 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Manage Articles</title>
+        <title>Quản Lý Bài Viết</title>
         <link rel="stylesheet" type="text/css" href="assets/css/manageArticles.css">
     </head>
     <body>
         <%@include file="header.jsp" %>
         <div class="manage-articles-container">
-            <h1>Manage Articles</h1>
+            <h1>Quản Lý Bài Viết</h1>
 
             <div class="search-section">
                 <form action="main" method="post">
@@ -49,7 +49,7 @@
                 <form action="main" method="post">
                     <input type="hidden" name="action" value="direct"/>
                     <input type="hidden" name="direct" value="articleForm.jsp"/>
-                    <button type="submit" class="add-article-btn">Add New Article</button>
+                    <button type="submit" class="add-article-btn">Thêm Bài Viết</button>
                 </form>
                 <% }%>
             </div>
@@ -70,12 +70,12 @@
                     <thead>
                         <tr>
                             <th>Thumbnail</th>
-                            <th>Article ID</th>
-                            <th>Title</th>
-                            <th>Author</th>
-                            <th>Type</th>
-                            <th>Publish Date</th>
-                            <th>Actions</th>
+                            <th>ID</th>
+                            <th>Tiêu Đề</th>
+                            <th>Tác Giả</th>
+                            <th>Loại</th>
+                            <th>Ngày Đăng</th>
+                            <th>Thao Tác</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -141,25 +141,7 @@
                 <button type="submit" class="back-btn">Back to dashboard</button>
             </form>
         </div>
-        <script>
-            // JavaScript to display the notification
-            window.onload = function () {
-                let message = document.getElementById('message').value;
-                let notification = document.getElementById('notification');
-                if (message) {
-                    notification.textContent = message;
-                    notification.classList.add('show'); // Add 'show' class
 
-                    // Hide the notification after 3 seconds (adjust as needed)
-                    setTimeout(() => {
-                        notification.classList.remove('show'); // Remove 'show'
-                    }, 3000);
-                }
-            };
-
-            function confirmDelete() {
-                return confirm("Are you sure you want to delete this article?");
-            }
-        </script>
+        <script src="assets/js/manageArticles.js"></script>
     </body>
 </html>

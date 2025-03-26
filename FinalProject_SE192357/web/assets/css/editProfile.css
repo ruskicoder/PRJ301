@@ -1,0 +1,245 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.edit-profile-container {
+    display: flex;
+    flex: 1;
+    margin-top: 10vh;
+    max-width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.admin-sidebar {
+    width: 250px;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    margin-right: 20px;
+    border-radius: 12px;
+}
+
+.admin-sidebar h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.main-content {
+    flex: 1;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+}
+.main-content.admin-view{
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+    font-weight: 600;
+}
+#drop-area {
+    border: 2px dashed #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+#drop-area.highlight {
+    border-color: #007bff;
+}
+#drop-area-admin {
+    border: 2px dashed #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+#drop-area-admin.highlight {
+    border-color: #007bff;
+}
+
+#preview {
+    max-width: 100%;
+    max-height: 200px;
+    margin-top: 10px;
+    display: none;
+}
+#preview-admin {
+    max-width: 100%;
+    max-height: 200px;
+    margin-top: 10px;
+}
+#adminUserImage{
+    width: 100%;
+}
+#userImage{
+    width: 100%;
+}
+.user-image{
+    width: 80px;
+    height: 80px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="file"]{
+    width: 95%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.update-btn, .search-btn, .edit-btn {
+    padding: 10px 20px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1rem;
+}
+
+.update-btn {
+    background-color: #007bff; /* Blue */
+    width: 100%;
+}
+.update-btn:hover{
+    background-color: #0056b3;
+}
+
+.search-btn {
+    background-color: #28a745; /* Green */
+}
+.search-btn:hover{
+    background-color: #1e7e34;
+}
+
+.edit-btn {
+    background-color: #ffc107; /* Yellow */
+}
+
+.table-container {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+.message{
+    color: red;
+    text-shadow: 0px 0px 5px white;
+    background-color: transparent;
+    padding: 5px 10px;
+    border-radius: 0.5em;
+    justify-content: center;
+    font: sans-serif;
+    font-weight: bold;
+}
+@media (max-width: 768px){
+    .edit-profile-container{
+        flex-direction: column;
+        margin-top: 25vh;
+    }
+    .admin-sidebar{
+        margin-right: 0;
+    }
+}
+.back-btn {
+    background-color: #6c757d; /* Gray */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 15px;
+    width: fit-content;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.back-btn:hover{
+    background-color: #5a6268;
+}
+.change-password-btn {
+    background-color: #007bff; /* Blue */
+    width: 100%;
+    padding: 10px 20px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1rem;
+    margin-top: 0.5em;
+}
+.change-password-btn:hover{
+    background-color: #0056b3;
+}
+.error-container {
+    text-align: center;
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #f44336; /* Red border for error */
+    background-color: #ffdddd; /* Light red background */
+    color: #f44336; /* Red text */
+    border-radius: 5px;
+}
+.error-container h1{
+    color: #f44336;
+}
+.error-container a{
+    text-decoration: none;
+    padding: 10px 20px;
+    background-color: #6c757d; /* Gray color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+    display: block;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}

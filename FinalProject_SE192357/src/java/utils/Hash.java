@@ -4,7 +4,6 @@ package utils;
  *
  * @author PC
  */
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -12,6 +11,9 @@ public class Hash {
 
     public static String toSHA256(String input) {
         try {
+            if (input == null) {
+                return null;
+            }
             // Get an instance of the SHA-256 message digest.
             MessageDigest md = MessageDigest.getInstance("SHA-256");
 

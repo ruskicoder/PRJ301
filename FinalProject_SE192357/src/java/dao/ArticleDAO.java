@@ -157,4 +157,33 @@ public class ArticleDAO implements IDAO<ArticleDTO, String> {
         }
         return list;
     }
+    
+    public List<ArticleDTO> searchBy(String searchTerm, String scope) {
+        List<ArticleDTO> list = new ArrayList<>();
+        String sql = "SELECT ArticleID, Title, Subtitle, Author, Content, Thumbnail, ArticleType, PublishDate FROM tblArticles WHERE "+ scope +" LIKE ?";
+        try (Connection conn = DBUtils.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "%" + searchTerm + "%");
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ArticleDTO article = new ArticleDTO(
+                            rs.getString("ArticleID"),
+                            rs.getString("Title"),
+                            rs.getString("Subtitle"),
+                            rs.getString("Author"),
+                            rs.getString("Content"),
+                            rs.getString("Thumbnail"),
+                            rs.getString("ArticleType"),
+                            rs.getDate("PublishDate") // Retrieve publishDate
+                    );
+                    list.add(article);
+                }
+            }
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(ArticleDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+        return list;
+    }
+    
 }

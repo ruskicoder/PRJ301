@@ -3,11 +3,7 @@
     Created on : Mar 8, 2025, 9:47:32 PM
     Author     : PC
 --%>
-<%-- 
-    Document   : header
-    Created on : Mar 8, 2025, 9:47:32 PM
-    Author     : PC
---%>
+
 <%@page import="utils.AuthUtils"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="dto.UserDTO"%>
@@ -28,7 +24,12 @@
 
         <nav class="nav-menu" id="main-nav" name="main-nav">
             <ul>
-                <li><a href="homepage.jsp" id="nav-home" name="navbar"><img src="assets/images/home_icon.png"></a></li>
+                <li>
+                    <form action="main" method="post">
+                        <input type="hidden" name="action" value="sortArticles" />
+                        <button type="submit" style = "background: none; border: none; padding: 0; margin: 0;" ><img src="assets/images/home_icon.png"></button>
+                    </form>
+                </li>
                 <li><a href="#" id="nav-articles" name="navbar">BẢN TIN</a></li>
                 <li><a href="#" id="nav-categories" name="navbar">ĐĂNG KIỂM</a></li>
                 <li><a href="#" id="nav-community" name="navbar">PHẠT NGUỘI</a></li>

@@ -5,7 +5,11 @@
  */
 package utils;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Base64;
+import javax.servlet.ServletContext;
 
 /**
  *
@@ -26,5 +30,17 @@ public class Base64Image {
         }
         String data = input.substring(FORMAT_PREFIX.length());
         return Base64.getDecoder().decode(data);
+    }
+
+    public static String imageToBase64(String imagePath, ServletContext context) {
+        try {
+             String absolutePath = context.getRealPath(imagePath); // Get the real path
+            File imageFile = new File(absolutePath);
+            byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
+            return encode(imageBytes); // Use existing encode method
+        } catch (IOException e) {
+            System.err.println("Error converting image to Base64: " + e.getMessage());
+            return null; 
+        }
     }
 }

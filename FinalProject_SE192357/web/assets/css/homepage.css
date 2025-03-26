@@ -3,52 +3,107 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack header/content vertically */
+    min-height: 100vh;
 }
 
-.page-container{
-    margin-top: 20vh;
+.page-container {
+    flex: 1; /* Take up remaining vertical space */
     padding: 20px;
-}
-
-.articles-container {
-    display: grid; /* Use CSS Grid */
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
-    gap: 20px; /* Space between items */
-    padding: 20px;
+    padding-top: 10vh; /* Space below fixed header */
     max-width: 1200px; /* Max container width */
     margin: 0 auto; /* Center the container */
 }
 
+.search-section {
+    display: flex;
+    justify-content: center; /* Center items */
+    align-items: center;
+    margin-bottom: 30px; /* Space below search */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    gap: 10px; /* Space between elements */
+}
+
+.search-section input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    flex-grow: 1; /* Allow input to take available space */
+    max-width: 400px; /* Limit max width */
+}
+
+.search-section select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.search-btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-btn:hover {
+    background-color: #0056b3;
+}
+
+.articles-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+.no-articles{
+    text-align: center;
+    font-size: 1.2em;
+    color: #666;
+    margin-top: 40px;
+}
+
 .article-card {
-    /* Removed flex properties, no longer needed with grid */
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
     height: 25rem;
-    overflow: hidden; /* Hide overflowing content */
+    overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex; /* Use flexbox for internal layout */
-    flex-direction: column; /* Stack content vertically */
+    display: flex;
+    flex-direction: column;
 }
 
 .article-card:hover {
-    transform: translateY(-5px); /* Lift the card slightly */
+    transform: translateY(-5px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+.article-card a {
+    text-decoration: none; /* Remove underline from links */
+    color: inherit; /* Inherit text color */
+    display: flex; /* Make the link behave like a flex container */
+    flex-direction: column; /* Stack image and info vertically */
+    height: 100%; /* Make the link fill the card */
 }
 
 .article-thumbnail {
     width: 100%;
     height: 12rem;
-    object-fit: cover; /* Ensure the image covers the area */
-    flex-shrink: 0; /* Prevent thumbnail from shrinking */
+    object-fit: cover;
+    flex-shrink: 0;
 }
 
 .article-info {
     padding: 20px;
-    flex-grow: 1; /* Allow info section to grow */
+    flex-grow: 1;
     display: flex;
-    flex-direction: column; /* Stack title and subtitle */
+    flex-direction: column;
 }
 
 .article-title {
@@ -56,7 +111,7 @@ body {
     font-weight: bold;
     color: #333;
     margin-bottom: 10px;
-    line-height: 1.4; /* Improved line height */
+    line-height: 1.4;
     flex-shrink: 0;
 }
 
@@ -64,11 +119,21 @@ body {
     font-size: 1rem;
     color: #666;
     line-height: 1.5;
-    flex-grow: 1; /* Allow subtitle to take remaining space */
+    flex-grow: 1;
 }
-@media (max-width: 768px) {
 
-    .page-container{
-        margin-top: 25vh;
+@media (max-width: 768px) {
+    .page-container {
+        padding-top: 20vh; /* Adjust for potentially taller header on mobile */
+    }
+    .search-section {
+        flex-direction: column;
+        align-items: stretch; /* Make elements full width */
+    }
+    .search-section input[type="text"],
+    .search-section select,
+    .search-btn {
+        width: auto; /* Reset width */
+        max-width: none; /* Reset max width */
     }
 }

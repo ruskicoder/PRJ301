@@ -28,17 +28,24 @@
     );
 
     -- tblCars
-    CREATE TABLE tblCars (
-        Plate VARCHAR(8) PRIMARY KEY,
-        CarName NVARCHAR(64) NOT NULL,
-        CarImage TEXT,
-        OwnerName NVARCHAR(128) NOT NULL,
-        CarType NVARCHAR(64) NOT NULL,
-        PlateType NVARCHAR(10) NOT NULL,
-        RegDate DATE NOT NULL,
-        FirstRegDate DATE NOT NULL,
-        MfdDate DATE NOT NULL
-    );
+CREATE TABLE tblCars (
+    CarID NVARCHAR(64) PRIMARY KEY,
+    CarName NVARCHAR(64) NOT NULL,
+    CarImage TEXT,
+    CarType NVARCHAR(64) NOT NULL
+);
+
+CREATE TABLE tblCarOwner(
+    Plate VARCHAR(8) PRIMARY KEY,
+    CarID NVARCHAR(64) references tblCars(CarID),
+    PlateType NVARCHAR(10) NOT NULL,
+    Owner NVARCHAR(128) NOT NULL,
+    RegDate DATE NOT NULL,
+    FirstRegDate DATE NOT NULL,
+    MfdDate DATE NOT NULL,
+    CONSTRAINT FK_CarOwner_Cars FOREIGN KEY (CarID) REFERENCES tblCars(CarID),
+    CONSTRAINT CK_PlateLength CHECK (DATALENGTH(Plate) >= 7)  
+);
 
     -- tblViolation
     CREATE TABLE tblViolation (
